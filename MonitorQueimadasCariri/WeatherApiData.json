@@ -1,6 +1,0 @@
-{
-    "host": "https://api.weatherapi.com/",
-    "path": "v1/current.json",
-    "queries": "?v1/current.json?key={}&q={}&aqi=yes",
-    "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}
