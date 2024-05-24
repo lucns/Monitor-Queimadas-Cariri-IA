@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 from WeatherIA.weather_api import WeatherApi
 
@@ -24,6 +25,8 @@ def main():
         weather.update()
         count = int(UPDATE_TIME * 60)
         while count > 0:
+            if datetime.now().hour == 0 and datetime.now().minute == 0 and datetime.now().second == 0:
+                weather.verifyDaysWithoutRain()
             count -= 1
             time.sleep(1)
             print(f"Updating in {longToString(count)}...")
