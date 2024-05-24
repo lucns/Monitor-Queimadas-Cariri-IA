@@ -1,0 +1,66 @@
+{
+    "prediction_total": 6784,
+    "occurred_total": 737,
+    "months": [
+        {
+            "number": 1,
+            "prediction": false,
+            "fires": 536
+        },
+        {
+            "number": 2,
+            "prediction": false,
+            "fires": 127
+        },
+        {
+            "number": 3,
+            "prediction": false,
+            "fires": 45
+        },
+        {
+            "number": 4,
+            "prediction": false,
+            "fires": 7
+        },
+        {
+            "number": 5,
+            "prediction": false,
+            "fires": 22
+        },
+        {
+            "number": 6,
+            "prediction": true,
+            "fires": 53
+        },
+        {
+            "number": 7,
+            "prediction": true,
+            "fires": 93
+        },
+        {
+            "number": 8,
+            "prediction": true,
+            "fires": 200
+        },
+        {
+            "number": 9,
+            "prediction": true,
+            "fires": 860
+        },
+        {
+            "number": 10,
+            "prediction": true,
+            "fires": 2211
+        },
+        {
+            "number": 11,
+            "prediction": true,
+            "fires": 1923
+        },
+        {
+            "number": 12,
+            "prediction": true,
+            "fires": 1103
+        }
+    ]
+}
