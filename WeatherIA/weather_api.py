@@ -56,41 +56,58 @@ class WeatherApi:
         if not os.path.exists('Data'):
             os.mkdir('Data')
 
-        current = jsonData['current']
-        jsonObject = {}
-        daysWithoutRain = 0
         filePath = f'Data/{city[0]}.json'
+        current = jsonData['current']
+        jsonCity = {}
         if os.path.exists(filePath):
             file = open(filePath, 'r', encoding="utf-8")
-            jsonObject = json.loads(file.read())
+            jsonCity = json.loads(file.read())
             file.close()
-            daysWithoutRain = jsonObject['days_without_rain']
 
-        now = self.now()
+        daysWithoutRain = 0
+        hadPrecipitation = None
         if current['precip_mm'] > 0:
             daysWithoutRain = 0
-        elif now.hour == 0 and now.minute < 15:
-            if 'maximum_precipitation' in jsonObject:
-                if jsonObject['maximum_precipitation'] == 0:
-                    daysWithoutRain = jsonObject['days_without_rain'] + 1  # increment days without rain
+            hadPrecipitation = True
+        else:
+            if len(jsonCity) > 0:
+                daysWithoutRain = jsonCity['days_without_rain']
+                hadPrecipitation = jsonCity['had_precipitation']
+            else:
+                daysWithoutRain = 0
+                hadPrecipitation = False
+
         jsonItem = {
             'city': city[0], 'timestamp': current['last_updated_epoch'], 'date_time': current['last_updated'], 'temperature': current['temp_c'], 'humidity': current['humidity'],
             'precipitation': current['precip_mm'], 'cloud': current['cloud'], 'carbon_monoxide': current['air_quality']['co'], 'days_without_rain': daysWithoutRain
         }
-        if os.path.exists(filePath):
-            jsonArray = jsonObject['data']
-            jsonArray.append(jsonItem)
-            self.removeRest(jsonArray)
-        else:
-            jsonObject['data'] = [jsonItem]
-            jsonObject['city'] = city[0]
-        value = current['precip_mm']
-        if 'maximum_precipitation' in jsonObject:
-            value = jsonObject['maximum_precipitation']
-        jsonObject['days_without_rain'] = daysWithoutRain
-        jsonObject['maximum_precipitation'] = value
+
+        if 'data' not in jsonCity:
+            jsonCity['data'] = []
+        jsonArray = jsonCity['data']
+        jsonArray.append(jsonItem)
+        self.removeRest(jsonArray)
+        jsonCity['city'] = city[0]
+        jsonCity['days_without_rain'] = daysWithoutRain
+        jsonCity['had_precipitation'] = hadPrecipitation
         file = open(filePath, 'w', encoding="utf-8")
-        json.dump(jsonObject, file, ensure_ascii=False, indent=4)
+        json.dump(jsonCity, file, ensure_ascii=False, indent=4)
         file.close()
 
         return jsonItem
+
+    def verifyDaysWithoutRain(self):
+        for city in CITIES_COORDINATES.items():
+            filePath = f'Data/{city[0]}.json'
+            jsonCity = {}
+            if os.path.exists(filePath):
+                file = open(filePath, 'r', encoding="utf-8")
+                jsonCity = json.loads(file.read())
+                file.close()
+
+            if not jsonCity['had_precipitation']:
+                jsonCity['days_without_rain'] += 1
+            file = open(filePath, 'w', encoding="utf-8")
+            json.dump(jsonCity, file, ensure_ascii=False, indent=4)
+            file.close()
+        time.sleep(1)
