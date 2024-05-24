@@ -1,0 +1,293 @@
+{
+    "data": [
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716517800,
+            "date_time": "2024-05-23 23:30",
+            "temperature": 23.5,
+            "humidity": 66,
+            "precipitation": 0.0,
+            "cloud": 29,
+            "carbon_monoxide": 247.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716517800,
+            "date_time": "2024-05-23 23:30",
+            "temperature": 23.5,
+            "humidity": 66,
+            "precipitation": 0.0,
+            "cloud": 29,
+            "carbon_monoxide": 247.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716518700,
+            "date_time": "2024-05-23 23:45",
+            "temperature": 23.5,
+            "humidity": 66,
+            "precipitation": 0.0,
+            "cloud": 29,
+            "carbon_monoxide": 247.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716518700,
+            "date_time": "2024-05-23 23:45",
+            "temperature": 23.5,
+            "humidity": 66,
+            "precipitation": 0.0,
+            "cloud": 29,
+            "carbon_monoxide": 247.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716519600,
+            "date_time": "2024-05-24 00:00",
+            "temperature": 21.4,
+            "humidity": 79,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 250.3,
+            "days_without_rain": 1
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716520500,
+            "date_time": "2024-05-24 00:15",
+            "temperature": 21.4,
+            "humidity": 79,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 250.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716521400,
+            "date_time": "2024-05-24 00:30",
+            "temperature": 21.4,
+            "humidity": 79,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 250.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716554700,
+            "date_time": "2024-05-24 09:45",
+            "temperature": 29.2,
+            "humidity": 43,
+            "precipitation": 0.0,
+            "cloud": 15,
+            "carbon_monoxide": 240.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716554700,
+            "date_time": "2024-05-24 09:45",
+            "temperature": 29.2,
+            "humidity": 43,
+            "precipitation": 0.0,
+            "cloud": 15,
+            "carbon_monoxide": 240.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716554700,
+            "date_time": "2024-05-24 09:45",
+            "temperature": 29.2,
+            "humidity": 43,
+            "precipitation": 0.0,
+            "cloud": 15,
+            "carbon_monoxide": 240.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716554700,
+            "date_time": "2024-05-24 09:45",
+            "temperature": 29.2,
+            "humidity": 43,
+            "precipitation": 0.0,
+            "cloud": 15,
+            "carbon_monoxide": 240.3,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716555600,
+            "date_time": "2024-05-24 10:00",
+            "temperature": 31.0,
+            "humidity": 39,
+            "precipitation": 0.0,
+            "cloud": 25,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716556500,
+            "date_time": "2024-05-24 10:15",
+            "temperature": 31.0,
+            "humidity": 39,
+            "precipitation": 0.0,
+            "cloud": 25,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716557400,
+            "date_time": "2024-05-24 10:30",
+            "temperature": 31.0,
+            "humidity": 39,
+            "precipitation": 0.0,
+            "cloud": 25,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716558300,
+            "date_time": "2024-05-24 10:45",
+            "temperature": 31.0,
+            "humidity": 39,
+            "precipitation": 0.0,
+            "cloud": 25,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716559200,
+            "date_time": "2024-05-24 11:00",
+            "temperature": 32.2,
+            "humidity": 36,
+            "precipitation": 0.0,
+            "cloud": 18,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716560100,
+            "date_time": "2024-05-24 11:15",
+            "temperature": 32.2,
+            "humidity": 36,
+            "precipitation": 0.0,
+            "cloud": 18,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716561000,
+            "date_time": "2024-05-24 11:30",
+            "temperature": 32.2,
+            "humidity": 36,
+            "precipitation": 0.0,
+            "cloud": 18,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716561900,
+            "date_time": "2024-05-24 11:45",
+            "temperature": 32.2,
+            "humidity": 36,
+            "precipitation": 0.0,
+            "cloud": 18,
+            "carbon_monoxide": 237.0,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716562800,
+            "date_time": "2024-05-24 12:00",
+            "temperature": 33.2,
+            "humidity": 34,
+            "precipitation": 0.0,
+            "cloud": 13,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716563700,
+            "date_time": "2024-05-24 12:15",
+            "temperature": 33.2,
+            "humidity": 34,
+            "precipitation": 0.0,
+            "cloud": 13,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716564600,
+            "date_time": "2024-05-24 12:30",
+            "temperature": 33.2,
+            "humidity": 34,
+            "precipitation": 0.0,
+            "cloud": 13,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716565500,
+            "date_time": "2024-05-24 12:45",
+            "temperature": 33.2,
+            "humidity": 34,
+            "precipitation": 0.0,
+            "cloud": 13,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716566400,
+            "date_time": "2024-05-24 13:00",
+            "temperature": 33.7,
+            "humidity": 33,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716568200,
+            "date_time": "2024-05-24 13:30",
+            "temperature": 33.7,
+            "humidity": 33,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        },
+        {
+            "city": "Campo Sales",
+            "timestamp": 1716569100,
+            "date_time": "2024-05-24 13:45",
+            "temperature": 33.7,
+            "humidity": 33,
+            "precipitation": 0.0,
+            "cloud": 19,
+            "carbon_monoxide": 233.7,
+            "days_without_rain": 0
+        }
+    ],
+    "city": "Campo Sales",
+    "days_without_rain": 0,
+    "maximum_precipitation": 0.0
+}
