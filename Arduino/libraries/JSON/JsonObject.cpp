@@ -22,6 +22,11 @@ void JsonObject::put(String key, String value) {
   putInternal("\"" + key + "\"" + ":\"" + value + "\"");
 }
 
+void JsonObject::put(String key, char* value) {
+  String s = String(value);
+  putInternal("\"" + key + "\"" + ":\"" + s + "\"");
+}
+
 void JsonObject::put(String key, int value) {
   putInternal("\"" + key + "\"" + ":" + String(value));
 }
