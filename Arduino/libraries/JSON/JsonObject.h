@@ -18,6 +18,7 @@ class JsonObject : public JsonParser {
     void put(String key, JsonObject value);
     void put(String key, JsonArray value);
     void put(String key, String value);
+    void put(String key, char* value);
     void put(String key, int value);
     void put(String key, unsigned long value);
     void put(String key, double value);
