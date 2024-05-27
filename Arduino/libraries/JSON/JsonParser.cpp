@@ -47,6 +47,16 @@ bool JsonParser::isValid() {
 }
 
 void JsonParser::putInternal(String s) {
+  if (!isArray) {
+	String key = s.substring(1, s.substring(1).indexOf("\"") + 1);
+	for (uint16_t i = 0; i < index; i++) {
+	  if (key.equals(data[i].substring(1, data[i].substring(1).indexOf("\"") + 1))) {
+		data[i] = "\"" + key + "\":" + s.substring(s.indexOf(":") + 1);
+		return;
+	  }
+	}
+  }  
+  
   if (index == MAXIMUM_ARRAY_SIZE) return;
   data[index++] = s;
 }
