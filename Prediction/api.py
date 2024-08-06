@@ -7,6 +7,7 @@ class Requester:
 
     def __init__(self):
         self.__responseCode = 0
+        self.__timeout = 60
         self.__headers = {}
 
     def getResponseCode(self):
@@ -14,6 +15,9 @@ class Requester:
 
     def getHeaders(self):
         return self.__headers
+
+    def setTimeout(self, timeout):
+        self.__timeout = timeout
 
     def requestGet(self, url, headers=None):
         self.__responseCode = 0
@@ -24,7 +28,7 @@ class Requester:
                 requisition.add_header(header[0], header[1])
 
         try:
-            response = urllib.request.urlopen(requisition, timeout=300)
+            response = urllib.request.urlopen(requisition, timeout=self.__timeout)
         except urllib.error.HTTPError as e:
             print(f'HTTPError: {e.code}', end=' ')
         except urllib.error.URLError as e:
@@ -46,7 +50,7 @@ class Requester:
                 requisition.add_header(header[0], header[1])
 
         try:
-            response = urllib.request.urlopen(requisition, timeout=300)
+            response = urllib.request.urlopen(requisition, timeout=self.__timeout)
         except urllib.error.HTTPError as e:
             print(f'HTTPError: {e.code}', end=' ')
         except urllib.error.URLError as e:

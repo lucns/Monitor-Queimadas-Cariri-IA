@@ -1,6 +1,8 @@
 import json
 import os
+import time
 from datetime import datetime
+
 from Prediction.constants import VERIFY_YEARS_COUNT
 from city import CityModel
 import numpy as np
@@ -9,24 +11,29 @@ from sklearn.linear_model import LinearRegression
 class DataAnalyzes:
     def __init__(self):
         self.totalChapadaAraripe = 0        # Total de focos da chapada do araripe nos ultimos VERIFY_YEARS_COUNT anos
-        self.totalCurrentYear = 0           # Total do ano atual
+        self.occurredCurrentYear = 0        # Total do ano atual
         self.predictCurrentYear = 0         # Media anual final
         self.predictChapadaAraripe = []     # Previsao de queimadas em cada mes, para a chapada do araripe
         self.occurredChapadaAraripe = []    # Total de focos ocorridos no ano atual, por mes
         self.annualTotalOccurred = {}       # Total de focos ocorridos por ano
         self.cityModels = {}                # Dicionario de cidades
+        self.dataChapadaAraripe = {}        # dados dos totais sobre os meses do ano atual}
+        self.dataCities = []                # dados a serem enviados pro back-end referentes as cidades (lista de dados de cidaddes)
 
     def analyze(self):
         self.occurredChapadaAraripe.clear()
         for i in range(0, 12): self.occurredChapadaAraripe.append(0)
 
-        self.totalCurrentYear = 0
+        if not os.path.exists('release'):
+            os.mkdir('release')
+
+        self.occurredCurrentYear = 0
         currentYear = datetime.now().year
         for year in range(currentYear - VERIFY_YEARS_COUNT, currentYear + 1):
             if year < currentYear:
                 self.annualTotalOccurred[year] = 0
-            for fileName in os.listdir(f'Filtered/{year}'): # fileName Eg:= Salitre.json
-                filePath = f'Filtered/{year}/{fileName}'
+            for fileName in os.listdir(f'filtered/{year}'): # fileName Eg:= Salitre.json
+                filePath = f'filtered/{year}/{fileName}'
 
                 filtered = open(filePath, 'r', encoding="utf-8")
                 array = json.loads(filtered.read())#['data']
@@ -43,9 +50,10 @@ class DataAnalyzes:
                     segments = date.split('-')
                     cityModel.putFiresData(segments[1], segments[0])
                     if currentYear == int(segments[0]):
-                        self.totalCurrentYear += 1
+                        self.occurredCurrentYear += 1
                     else:
                         self.totalChapadaAraripe += 1
+
 
         for cityName in self.cityModels:
             cityModel = self.cityModels[cityName]
@@ -55,6 +63,14 @@ class DataAnalyzes:
             for y in self.annualTotalOccurred:
                 if y < currentYear:
                     self.annualTotalOccurred[y] += self.cityModels[cityName].totalPerYears[str(y)]
+
+            for i in range(12):
+                base = []
+                for items in cityModel.years.items():
+                    months = items[1]  # 0 = 2022, 1 = [23, 45, 45,...]
+                    base.append(months[i])
+                cityModel.monthlyPredict.append(max(self.predictNextNumber(base), 0))
+            cityModel.calculateTotals(currentYear)
 
             count = 0
             for items in cityModel.years.items():
@@ -69,6 +85,19 @@ class DataAnalyzes:
             print(f'Media -> {cityModel.monthlyAverage}')
             print(f'Media anual da cidade sem contar o atual ano -> {count / VERIFY_YEARS_COUNT}')
             print()
+
+        timestamp = round(time.time() * 1000)
+        dateTime = datetime.now().strftime("%Y-%m-%d %H:%M")
+        for item in self.cityModels.items():
+            print(f'Previsao: {item[1].monthlyPredict} {item[0]}')
+            jsonMonths = []
+            for index in range(0, 12):
+                jsonMonths.append({"fireOccurrences": item[1].years[str(currentYear)][index], "firesPredicted": item[1].monthlyPredict[index]})
+            jsonObject = {"timestamp": timestamp, "date_time": dateTime, 'city': item[0], 'prediction_total': item[1].predictedCurrentYear, 'occurred_total': item[1].totalOccurrencesCurrentYear, 'months': jsonMonths}
+            self.dataCities.append(jsonObject)
+            file = open(f'release/{item[0]}.json', 'w', encoding="utf-8")
+            json.dump(jsonObject, file, ensure_ascii=False, indent=4)
+            file.close()
 
         years = {}
         for year in range(currentYear - VERIFY_YEARS_COUNT, currentYear + 1):
@@ -98,36 +127,28 @@ class DataAnalyzes:
             print(f'|\t{y}\t|\t{self.annualTotalOccurred[y]}\t|\t{years[y]}')
 
         self.predictCurrentYear = self.predictNextNumber(base)
-        print(f'|\t{currentYear}\t|\t{self.totalCurrentYear}\t\t|\t', end='')
+
+        print(f'|\t{currentYear}\t|\t{self.occurredCurrentYear}\t\t|\t', end='')
         print('[', end='')
         jsonMonths = []
         for i in range(0, 12):
             jsonMonth = {}
-            jsonMonth['number'] = i + 1
-            if i + 1 > datetime.now().month:
-                jsonMonth['prediction'] = True
-                jsonMonth['fires'] = self.predictChapadaAraripe[i]
-                print(f'~{self.predictChapadaAraripe[i]}', end='')
-            else:
-                jsonMonth['prediction'] = False
-                jsonMonth['fires'] = self.occurredChapadaAraripe[i]
-                print(f'{self.occurredChapadaAraripe[i]}', end='')
-            if i < 11:
-                print(', ', end='')
+            #jsonMonth['number'] = i + 1
+            jsonMonth['fireOccurrences'] = self.occurredChapadaAraripe[i]
+            jsonMonth['firesPredicted'] = self.predictChapadaAraripe[i]
             jsonMonths.append(jsonMonth)
+            print(self.occurredChapadaAraripe[i], end='')
+            if i < 11: print(', ', end='')
         print(']')
         print(f'_________________________________________________________________________________________')
         print()
 
-        jsonObject = {}
-        jsonObject['prediction_total'] = self.predictCurrentYear
-        jsonObject['occurred_total'] = self.totalCurrentYear
-        jsonObject['months'] = jsonMonths
 
-        if not os.path.exists('Release'):
-            os.mkdir('Release')
-        file = open('Release/FiresPrediction.json', 'w', encoding="utf-8")
-        json.dump(jsonObject, file, ensure_ascii=False, indent=4)
+        self.dataChapadaAraripe = {"timestamp": timestamp, "date_time": dateTime, 'city': "Chapada do Araripe", 'prediction_total':  self.predictCurrentYear, 'occurred_total': self.occurredCurrentYear, 'months': jsonMonths}
+        if not os.path.exists('release'):
+            os.mkdir('release')
+        file = open('release/Chapada do Araripe.json', 'w', encoding="utf-8")
+        json.dump(self.dataChapadaAraripe, file, ensure_ascii=False, indent=4)
         file.close()
 
         #print(f'Total ocorrido nos ultimos {VERIFY_YEARS_COUNT} anos -> {self.totalChapadaAraripe}')

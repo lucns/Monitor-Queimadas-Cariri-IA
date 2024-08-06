@@ -5,12 +5,13 @@ import time
 import json
 import os
 
-DATA_PATH = os.getcwd() + "/Data"
+DATA_PATH = os.getcwd() + "/data"
 
 
 class TerraBrasilis:
     def __init__(self):
         self.__requester = Requester()
+        self.__requester.setTimeout(300)
         self.__url = 'https://terrabrasilis.dpi.inpe.br/'
         self.__cookieUrl = 'queimadas/bdqueimadas/'
         self.__urlCsrf = 'queimadas/bdqueimadas/#tabela-de-atributos'
@@ -49,7 +50,7 @@ class TerraBrasilis:
             os.mkdir(DATA_PATH)
         currentYear = datetime.now().year
         for year in range(currentYear - VERIFY_YEARS_COUNT, currentYear):
-            print(f'Enter in {year}')
+            print(f'Enter in {year}', end='. ')
             folderYear = f'{DATA_PATH}/{year}'
             if not os.path.exists(folderYear):
                 os.mkdir(folderYear)
@@ -80,18 +81,18 @@ class TerraBrasilis:
                             fileCity.close()
                         if responseCode != 200 and retries < 10:
                             time.sleep(1)
+                            print(f' Retrying now', end='')
                     print(f' Successful.')
                     time.sleep(1)
+            print('Finished.')
 
     def updateCurrentData(self):
         now = datetime.now()
         timeFrom = self.__requester.urlEncode(f'{now.year}-01-01 00:00:00')
-        day = None
         if now.day < 10:
             day = f'0{now.day}'
         else:
             day = f'{now.day}'
-        month = None
         if now.month < 10:
             month = f'0{now.month}'
         else:
@@ -146,17 +147,17 @@ class TerraBrasilis:
     def removeDuplicities(self):
         # 1 - remover duplicidades de horarios
         # concluido
-        if not os.path.exists('Filtered'):
-            os.mkdir('Filtered')
-        for yearFolder in os.listdir("Data"):
+        if not os.path.exists('filtered'):
+            os.mkdir('filtered')
+        for yearFolder in os.listdir("data"):
             print(yearFolder)
 
-            if not os.path.exists(f'Filtered/{yearFolder}'):
-                os.mkdir(f'Filtered/{yearFolder}')
+            if not os.path.exists(f'filtered/{yearFolder}'):
+                os.mkdir(f'filtered/{yearFolder}')
 
-            for fileName in os.listdir(f'Data/{yearFolder}'):
-                filePath = f'Data/{yearFolder}/{fileName}'
-                filteredPath = f'Filtered/{yearFolder}/{fileName}'
+            for fileName in os.listdir(f'data/{yearFolder}'):
+                filePath = f'data/{yearFolder}/{fileName}'
+                filteredPath = f'filtered/{yearFolder}/{fileName}'
                 print(f'{filePath}')
 
                 filtered = open(filePath, 'r', encoding="utf-8")
@@ -181,34 +182,12 @@ class TerraBrasilis:
         # nao necessario por enquanto
 
     def generateCustomData(self):
-        if not os.path.exists('Coordinates'):
-            os.mkdir('Coordinates')
-        for yearFolder in os.listdir("Filtered"):
-            print(yearFolder)
-
-            if not os.path.exists(f'Coordinates/{yearFolder}'):
-                os.mkdir(f'Coordinates/{yearFolder}')
-
-            cariri = []
-            for fileName in os.listdir(f'Filtered/{yearFolder}'):
-                filePath = f'Filtered/{yearFolder}/{fileName}'
-                filteredPath = f'Coordinates/{yearFolder}/{fileName}'
-                print(f'\t{filePath}')
-
-                filtered = open(filePath, 'r', encoding="utf-8")
-                array = json.loads(filtered.read())
-                filtered.close()
-
-                jsonArray = []
-                for item in array:
-                    jsonArray.append([item[9], item[10]])
-                    cariri.append([item[9], item[10]])
-
-                filtered = open(filteredPath, 'w', encoding="utf-8")
-                json.dump(jsonArray, filtered, ensure_ascii=False, indent=4)
-                filtered.close()
-
-            filtered = open(f'Coordinates/{yearFolder}/Regiao do Cariri.json', 'w', encoding="utf-8")
-            json.dump(cariri, filtered, ensure_ascii=False, indent=4)
-            filtered.close()
+        if not os.path.exists('custom'):
+            os.mkdir('custom')
+        jsonArray = []
+        for city in CITIES_IDS.items():
+            jsonArray.append(city[0])
+        filtered = open('custom/Cities.json', 'w', encoding="utf-8")
+        json.dump(jsonArray, filtered, ensure_ascii=False, indent=4)
+        filtered.close()
         print("ok")
