@@ -2,9 +2,6 @@ import json
 import os
 import time
 
-from datetime import datetime
-import pytz
-
 from WeatherIA.api import Requester
 from WeatherIA.constants import CITIES_COORDINATES, MAX_HISTORIC
 
@@ -15,58 +12,101 @@ class WeatherApi:
         self.__url = f'https://api.weatherapi.com/'
         self.__requester = Requester()
 
-    def now(self):
-        return datetime.now(pytz.timezone('America/Fortaleza'))
-
     def update(self):
-        arrayToSend = []
+        arrayToSendWeather = []
+        arrayToSendProbabillity = []
         for city in CITIES_COORDINATES.items():
+            # weather feature
             print(f'Requesting data for: {city[0]}', end=' ')
-            retries = 0
-            responseCode = 0
-            while responseCode != 200:
-                retries += 1
-                if retries == 10:
-                    #raise Exception(f'Fail request data city {city[0]}')
-                    print(f'Error while trying request data from {city[0]}')
-                    return
-                url = f'{self.__url}v1/current.json?key=a8856d705d3b4b17b25151225240605&q={city[1]}&aqi=yes'
-                content = self.__requester.requestGet(url)
-                responseCode = self.__requester.getResponseCode()
-                if responseCode == 200:
-                    arrayToSend.append(self.retrieveContent(content, city))
-                    print()
-                    time.sleep(1)
-                elif retries < 10:
-                    time.sleep(1)
-        if not os.path.exists('Release'):
-            os.mkdir('Release')
-        file = open('Release/WeatherData.json', 'w', encoding="utf-8")
-        json.dump(arrayToSend, file, ensure_ascii=False, indent=4)
+            url = f'{self.__url}v1/current.json?key=a8856d705d3b4b17b25151225240605&q={city[1]}&aqi=yes'
+            data = self.downloadData(url)
+            if data is None:
+                # raise Exception(f'Fail request data city {city[0]}')
+                print(f'Error while trying request weather data from {city[0]}')
+                continue
+            else:
+                weather = self.retrieveWeatherContent(data, city)
+                arrayToSendWeather.append(weather)
+            time.sleep(1)
+            # Probability feature
+            url = f'{self.__url}v1/forecast.json?key=a8856d705d3b4b17b25151225240605&q={city[1]}&aqi=yes'
+            forecast = self.downloadData(url)
+            if data is None:
+                # raise Exception(f'Fail request data city {city[0]}')
+                print(f'Error while trying request weather data from {city[0]}')
+            else:
+                arrayToSendProbabillity.append(self.retrieveForecastContent(weather, forecast, city))
+            time.sleep(1)
+            print()
+        if not os.path.exists('release'):
+            os.mkdir('release')
+        file = open('release/WeatherData.json', 'w', encoding="utf-8")
+        json.dump(arrayToSendWeather, file, ensure_ascii=False, indent=4)
+        file.close()
+        file = open('release/ProbabilityData.json', 'w', encoding="utf-8")
+        json.dump(arrayToSendProbabillity, file, ensure_ascii=False, indent=4)
         file.close()
 
     def removeRest(self, jsonArray):
         while len(jsonArray) > MAX_HISTORIC:
             jsonArray.pop(0)
 
-    def retrieveContent(self, content, city):
-        jsonData = json.loads(content)
-        print(f'from {jsonData['location']['region']}. Successful.', end=' ')
+    def downloadData(self, url):
+        retries = 0
+        responseCode = 0
+        while responseCode != 200:
+            retries += 1
+            if retries == 10:
+                return None
+            content = self.__requester.requestGet(url)
+            responseCode = self.__requester.getResponseCode()
+            if responseCode == 200:
+                return content
+            elif retries < 10:
+                time.sleep(1)
 
-        if not os.path.exists('Data'):
-            os.mkdir('Data')
+    def calculateProbability(self, temperature, humidity, daysWithoutRain, uvIndex):
+        valueTemperature = max(temperature - 30, 1)     # consider using only high temperatures over 30 degrees
+        valueHumidity = 100 - humidity                  # inversely proportional
+        weightTemperatureHumidity = ((valueTemperature * valueHumidity) / 1000) * uvIndex
+        return min(int((weightTemperatureHumidity**3) * max(1, daysWithoutRain)), 100)
 
-        filePath = f'Data/{city[0]}.json'
-        current = jsonData['current']
+    def retrieveForecastContent(self, weather, forecast, city):
+        if not os.path.exists('forecast'):
+            os.mkdir('forecast')
+        listForecastHours = json.loads(forecast)['forecast']['forecastday'][0]['hour']
+        jsonCity = {'probabilities': []}
+        for hourData in listForecastHours:
+            data = {
+                'timestamp': hourData['time_epoch'], 'date_time': hourData['time'], 'temperature': hourData['temp_c'],
+                'humidity': hourData['humidity'], 'uv_index': hourData['uv']
+            }
+            data['probability'] = self.calculateProbability(data['temperature'], data['humidity'], weather['days_without_rain'], hourData['uv'])
+            jsonCity['probabilities'].append(data)
+            jsonCity['city'] = weather['city']
+
+        filePath = f'forecast/{city[0]}.json'
+        file = open(filePath, 'w', encoding="utf-8")
+        json.dump(jsonCity, file, ensure_ascii=False, indent=4)
+        file.close()
+        return jsonCity
+
+    def retrieveWeatherContent(self, weather, city):
+        jsonWeather = json.loads(weather)
+        print(f'from {jsonWeather['location']['region']}. Successful.', end=' ')
+
+        if not os.path.exists('weather'):
+            os.mkdir('weather')
+
+        filePath = f'weather/{city[0]}.json'
+        current = jsonWeather['current']
         jsonCity = {}
         if os.path.exists(filePath):
             file = open(filePath, 'r', encoding="utf-8")
             jsonCity = json.loads(file.read())
             file.close()
 
-        daysWithoutRain = 0
-        hadPrecipitation = None
-        if current['precip_mm'] > 0:
+        if current['precip_mm'] >= 1:
             daysWithoutRain = 0
             hadPrecipitation = True
         else:
@@ -98,7 +138,7 @@ class WeatherApi:
 
     def verifyDaysWithoutRain(self):
         for city in CITIES_COORDINATES.items():
-            filePath = f'Data/{city[0]}.json'
+            filePath = f'weather/{city[0]}.json'
             jsonCity = {}
             if os.path.exists(filePath):
                 file = open(filePath, 'r', encoding="utf-8")

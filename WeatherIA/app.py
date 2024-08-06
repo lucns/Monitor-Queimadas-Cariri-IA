@@ -1,3 +1,5 @@
+import json
+import random
 import time
 from datetime import datetime
 
@@ -31,6 +33,7 @@ def main():
             time.sleep(1)
             print(f"Updating in {longToString(count)}...")
 
-print("start")
-main()
-print("finish")
+if __name__ == '__main__':
+    print("start")
+    main()
+    print("finish")
